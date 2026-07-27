@@ -1,0 +1,832 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CyberShield | Secure Monitoring</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0a0e17;
+        --panel: #111827;
+        --cyan: #00d4ff;
+        --green: #00c853;
+        --red: #ff1744;
+        --text: #e5f8ff;
+        --muted: #86a7b9;
+        --muted-light: #cbd5e1;
+      }
+
+      .text-muted {
+        color: var(--muted-light) !important;
+      }
+
+      small.text-muted {
+        color: var(--muted-light) !important;
+      }
+
+      body {
+        background: linear-gradient(135deg, #050816 0%, var(--bg) 100%);
+        color: var(--text);
+        min-height: 100vh;
+      }
+
+      .sidebar {
+        background: rgba(7, 12, 24, 0.95);
+        min-height: 100vh;
+        border-right: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .sidebar .nav-link {
+        color: var(--muted);
+        border-radius: 12px;
+        margin-bottom: 0.4rem;
+      }
+
+      .sidebar .nav-link.active,
+      .sidebar .nav-link:hover {
+        color: white;
+        background: rgba(0, 212, 255, 0.16);
+      }
+
+      .card-glow {
+        background: rgba(17, 24, 39, 0.95);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        box-shadow: 0 0 25px rgba(0, 212, 255, 0.08);
+      }
+
+      .metric-value {
+        font-size: 1.65rem;
+        font-weight: 700;
+        color: var(--cyan);
+      }
+
+      .badge-status {
+        font-size: 0.8rem;
+        padding: 0.45rem 0.75rem;
+      }
+
+      .status-secure {
+        background: rgba(0, 200, 83, 0.2);
+        color: var(--green);
+      }
+
+      .status-warning {
+        background: rgba(255, 180, 0, 0.15);
+        color: #ffd54f;
+      }
+
+      .btn-cyber {
+        background: linear-gradient(90deg, var(--cyan), #0d7c91);
+        color: white;
+        border: none;
+      }
+
+      .btn-cyber:hover {
+        color: white;
+        filter: brightness(1.05);
+      }
+
+      .result-box {
+        background: rgba(0, 212, 255, 0.07);
+        border: 1px solid rgba(0, 212, 255, 0.2);
+        border-radius: 12px;
+      }
+
+      .table-dark-custom {
+        background: rgba(17, 24, 39, 0.95);
+      }
+
+      .severity-critical {
+        background: rgba(255, 23, 68, 0.18);
+        color: var(--red);
+      }
+
+      .severity-high {
+        background: rgba(255, 107, 107, 0.16);
+        color: #ff8a80;
+      }
+
+      .severity-medium {
+        background: rgba(255, 193, 7, 0.16);
+        color: #ffd54f;
+      }
+
+      .severity-low {
+        background: rgba(0, 200, 83, 0.16);
+        color: var(--green);
+      }
+
+      .status-blocked {
+        background: rgba(255, 23, 68, 0.18);
+        color: var(--red);
+      }
+
+      .status-alert {
+        background: rgba(255, 193, 7, 0.16);
+        color: #ffd54f;
+      }
+
+      .status-allowed {
+        background: rgba(0, 200, 83, 0.16);
+        color: var(--green);
+      }
+
+      .status-pending {
+        background: rgba(0, 212, 255, 0.16);
+        color: var(--cyan);
+      }
+
+      .form-control {
+        background: rgba(255, 255, 255, 0.06);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        color: white;
+      }
+
+      .form-control:focus {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: var(--cyan);
+        color: white;
+        box-shadow: 0 0 0 0.2rem rgba(0, 212, 255, 0.25);
+      }
+
+      .form-control option {
+        background: var(--bg);
+        color: white;
+      }
+
+      .form-label {
+        color: var(--text);
+      }
+
+      /* Real-time Scanning Styles */
+      .progress-container {
+        display: none;
+        margin-bottom: 1.5rem;
+      }
+
+      .progress-container.active {
+        display: block;
+      }
+
+      .progress {
+        background: rgba(0, 212, 255, 0.1);
+        border-radius: 10px;
+        height: 8px;
+        overflow: hidden;
+        border: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .progress-bar-scan {
+        background: linear-gradient(90deg, var(--cyan), #0d7c91);
+        height: 100%;
+        width: 0%;
+        transition: width 0.4s ease;
+        box-shadow: 0 0 15px rgba(0, 212, 255, 0.6);
+      }
+
+      .status-message {
+        font-size: 0.9rem;
+        color: var(--cyan);
+        margin-top: 0.75rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+      }
+
+      .status-message.checking {
+        color: #ffd54f;
+      }
+
+      .status-message.success {
+        color: var(--green);
+      }
+
+      .status-message.error {
+        color: var(--red);
+      }
+
+      .spinner-dots {
+        display: inline-flex;
+        gap: 4px;
+      }
+
+      .spinner-dots span {
+        width: 4px;
+        height: 4px;
+        border-radius: 50%;
+        background: currentColor;
+        animation: pulse 1.4s infinite;
+      }
+
+      .spinner-dots span:nth-child(2) {
+        animation-delay: 0.2s;
+      }
+
+      .spinner-dots span:nth-child(3) {
+        animation-delay: 0.4s;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; }
+        50% { opacity: 1; }
+      }
+
+      .checks-container {
+        display: none;
+        margin-top: 1.5rem;
+      }
+
+      .checks-container.active {
+        display: block;
+      }
+
+      .check-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0.75rem 1rem;
+        margin-bottom: 0.5rem;
+        background: rgba(0, 212, 255, 0.06);
+        border: 1px solid rgba(0, 212, 255, 0.15);
+        border-radius: 8px;
+        animation: slideIn 0.3s ease;
+        opacity: 0;
+      }
+
+      .check-item.show {
+        opacity: 1;
+      }
+
+      @keyframes slideIn {
+        from {
+          transform: translateX(-10px);
+          opacity: 0;
+        }
+        to {
+          transform: translateX(0);
+          opacity: 1;
+        }
+      }
+
+      .check-name {
+        font-size: 0.9rem;
+        color: var(--text);
+        flex: 1;
+      }
+
+      .check-status {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+        font-weight: 600;
+        font-size: 0.85rem;
+      }
+
+      .check-status.pass {
+        color: var(--green);
+      }
+
+      .check-status.fail {
+        color: var(--red);
+      }
+
+      .check-status.pending {
+        color: var(--muted-light);
+      }
+
+      .final-result {
+        display: none;
+        margin-top: 1.5rem;
+        padding: 1.5rem;
+        background: rgba(0, 212, 255, 0.08);
+        border: 1px solid rgba(0, 212, 255, 0.25);
+        border-radius: 12px;
+        animation: fadeInScale 0.5s ease;
+      }
+
+      .final-result.show {
+        display: block;
+      }
+
+      @keyframes fadeInScale {
+        from {
+          opacity: 0;
+          transform: scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+
+      .result-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 1rem;
+      }
+
+      .result-status-badge {
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.95rem;
+      }
+
+      .result-status-badge.safe {
+        background: rgba(0, 200, 83, 0.2);
+        color: var(--green);
+      }
+
+      .result-status-badge.suspicious {
+        background: rgba(255, 193, 7, 0.16);
+        color: #ffd54f;
+      }
+
+      .result-status-badge.malicious {
+        background: rgba(255, 23, 68, 0.18);
+        color: var(--red);
+      }
+
+      .threat-score-circle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 80px;
+        height: 80px;
+        border-radius: 50%;
+        background: rgba(0, 212, 255, 0.1);
+        border: 3px solid var(--cyan);
+        font-size: 1.8rem;
+        font-weight: 700;
+        color: var(--cyan);
+      }
+
+      .result-info {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+        margin-top: 1rem;
+      }
+
+      .result-info-item {
+        font-size: 0.9rem;
+      }
+
+      .result-info-label {
+        color: var(--muted-light);
+        margin-bottom: 0.25rem;
+      }
+
+      .result-info-value {
+        color: var(--text);
+        font-weight: 600;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container-fluid">
+      <div class="row">
+        <nav class="col-md-3 col-lg-2 d-md-block sidebar py-4">
+          <div class="px-3 mb-4">
+            <h3 class="fw-bold d-flex align-items-center gap-2">
+              <i class="bi bi-shield-shaded text-cyan"></i>
+              CyberShield
+            </h3>
+            <p class="small text-muted mb-0">Your Digital Shield Against Cyber Threats</p>
+          </div>
+          <ul class="nav flex-column px-3">
+            <li class="nav-item">
+              <a class="nav-link {% if page == 'dashboard' %}active{% endif %}" href="/dashboard">
+                <i class="bi bi-speedometer2 me-2"></i>Dashboard
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="#scanner-section">
+                <i class="bi bi-search me-2"></i>Scan
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link {% if page == 'logs' %}active{% endif %}" href="/logs">
+                <i class="bi bi-list-ul me-2"></i>Logs
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="/report" id="report-link">
+                <i class="bi bi-file-earmark-text me-2"></i>Report
+              </a>
+            </li>
+            <li class="nav-item mt-3">
+              <a class="nav-link" href="/logout">
+                <i class="bi bi-box-arrow-right me-2"></i>Logout
+              </a>
+            </li>
+          </ul>
+        </nav>
+
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <div>
+              <p class="text-uppercase small text-muted mb-1">Threat Intelligence Console</p>
+              <h2 class="fw-bold">CyberShield Command Center</h2>
+            </div>
+            <div class="text-end">
+              <span class="badge badge-status status-secure">System Secure</span>
+              <div class="small text-muted mt-2">Last Scan: {{ metrics.last_scan }}</div>
+            </div>
+          </div>
+
+          {% if page == 'dashboard' %}
+          <section class="row g-4 mb-4">
+            <div class="col-md-6 col-xl-3">
+              <div class="card card-glow h-100 p-3">
+                <div class="small text-muted">Total Threats Detected</div>
+                <div class="metric-value">{{ metrics.threats }}</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card card-glow h-100 p-3">
+                <div class="small text-muted">Active Threats</div>
+                <div class="metric-value">{{ metrics.active }}</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card card-glow h-100 p-3">
+                <div class="small text-muted">System Status</div>
+                <div class="metric-value">{{ metrics.status }}</div>
+              </div>
+            </div>
+            <div class="col-md-6 col-xl-3">
+              <div class="card card-glow h-100 p-3">
+                <div class="small text-muted">Last Scan</div>
+                <div class="metric-value small">{{ metrics.last_scan }}</div>
+              </div>
+            </div>
+          </section>
+
+          <section id="scanner-section" class="row g-4 mb-4">
+            <div class="col-lg-7">
+              <div class="card card-glow p-4 h-100">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <h4 class="fw-semibold mb-0"><i class="bi bi-globe2 me-2"></i>URL Scanner</h4>
+                  <button id="report-button" class="btn btn-cyber" type="button">Generate Report</button>
+                </div>
+                <form id="scan-form">
+                  <label class="form-label" for="url-input">Enter a URL to inspect</label>
+                  <div class="input-group">
+                    <input id="url-input" class="form-control" type="text" placeholder="https://example.com" required />
+                    <button class="btn btn-cyber" id="scan-button" type="submit">Scan</button>
+                  </div>
+                </form>
+                <div id="scan-feedback" class="mt-3 small text-muted"></div>
+
+                <!-- Progress Bar Container -->
+                <div id="progress-container" class="progress-container">
+                  <div class="progress">
+                    <div id="progress-bar" class="progress-bar-scan"></div>
+                  </div>
+                  <div id="status-message" class="status-message checking">
+                    <span class="spinner-dots">
+                      <span></span>
+                      <span></span>
+                      <span></span>
+                    </span>
+                    <span id="status-text">Starting scan...</span>
+                  </div>
+                </div>
+
+                <!-- Real-time Checks Display -->
+                <div id="checks-container" class="checks-container">
+                  <div class="small text-muted mb-2">Security Checks</div>
+                  <div id="checks-list"></div>
+                </div>
+
+                <!-- Final Result -->
+                <div id="final-result" class="final-result">
+                  <div class="result-header">
+                    <div>
+                      <div class="small text-muted mb-2">Scan Complete</div>
+                      <h5 class="fw-semibold mb-0" id="scan-url"></h5>
+                    </div>
+                    <div class="threat-score-circle" id="threat-score">-</div>
+                  </div>
+                  <div class="result-status-badge" id="result-badge"></div>
+                  <div class="result-info">
+                    <div class="result-info-item">
+                      <div class="result-info-label">Final Status</div>
+                      <div class="result-info-value" id="final-status">-</div>
+                    </div>
+                    <div class="result-info-item">
+                      <div class="result-info-label">Checks Passed</div>
+                      <div class="result-info-value" id="checks-passed">-</div>
+                    </div>
+                  </div>
+                </div>
+
+                <div id="scan-results" class="result-box p-3 mt-3 d-none"></div>
+              </div>
+            </div>
+            <div class="col-lg-5">
+              <div class="card card-glow p-4 h-100">
+                <h4 class="fw-semibold mb-3"><i class="bi bi-journal-text me-2"></i>Recent Security Logs</h4>
+                <ul class="list-group list-group-flush">
+                  {% for log in logs %}
+                  <li class="list-group-item bg-transparent border-secondary text-light">
+                    <div class="d-flex justify-content-between">
+                      <strong>{{ log.event_type }}</strong>
+                      <span class="badge badge-status status-allowed">{{ log.status }}</span>
+                    </div>
+                    <div class="small text-muted">{{ log.timestamp }} · {{ log.severity }}</div>
+                  </li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </section>
+          {% endif %}
+
+          {% if page == 'logs' %}
+          <section class="card card-glow p-4 mb-4">
+            <div class="d-flex justify-content-between align-items-center mb-3">
+              <h4 class="fw-semibold mb-0"><i class="bi bi-shield-lock me-2"></i>Security Event Log</h4>
+              <a href="/dashboard" class="btn btn-cyber">Back to Dashboard</a>
+            </div>
+            <div class="table-responsive">
+              <table class="table table-dark-custom align-middle">
+                <thead>
+                  <tr>
+                    <th>Timestamp</th>
+                    <th>Event Type</th>
+                    <th>Severity</th>
+                    <th>Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for log in logs %}
+                  <tr>
+                    <td>{{ log.timestamp }}</td>
+                    <td>{{ log.event_type }}</td>
+                    <td><span class="badge badge-status severity-{{ log.severity.lower() }}">{{ log.severity }}</span></td>
+                    <td><span class="badge badge-status status-{{ log.status.lower() }}">{{ log.status }}</span></td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </section>
+
+          <section class="card card-glow p-4">
+            <h4 class="fw-semibold mb-3"><i class="bi bi-plus-circle me-2"></i>Add New Security Log</h4>
+            <form id="log-form">
+              <div class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label" for="event-type">Event Type</label>
+                  <select class="form-control" id="event-type" name="event_type" required>
+                    <option value="">Select event type...</option>
+                    <option value="Login Attempt">Login Attempt</option>
+                    <option value="Firewall Alert">Firewall Alert</option>
+                    <option value="Scan Complete">Scan Complete</option>
+                    <option value="Malware Detected">Malware Detected</option>
+                    <option value="Port Scan Detected">Port Scan Detected</option>
+                    <option value="Unauthorized Access">Unauthorized Access</option>
+                    <option value="System Update">System Update</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="severity">Severity</label>
+                  <select class="form-control" id="severity" name="severity" required>
+                    <option value="">Select severity...</option>
+                    <option value="Critical">Critical</option>
+                    <option value="High">High</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Low">Low</option>
+                  </select>
+                </div>
+                <div class="col-md-4">
+                  <label class="form-label" for="log-status">Status</label>
+                  <select class="form-control" id="log-status" name="status" required>
+                    <option value="">Select status...</option>
+                    <option value="Blocked">Blocked</option>
+                    <option value="Alert">Alert</option>
+                    <option value="Allowed">Allowed</option>
+                    <option value="Pending">Pending</option>
+                  </select>
+                </div>
+              </div>
+              <button class="btn btn-cyber mt-3" type="submit">Add Log</button>
+              <div id="log-feedback" class="mt-2 small"></div>
+            </form>
+          </section>
+          {% endif %}
+        </main>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      // Real-time Scanner Implementation
+      const scanForm = document.getElementById('scan-form');
+      const urlInput = document.getElementById('url-input');
+      const scanButton = document.getElementById('scan-button');
+      const progressContainer = document.getElementById('progress-container');
+      const progressBar = document.getElementById('progress-bar');
+      const statusMessage = document.getElementById('status-message');
+      const statusText = document.getElementById('status-text');
+      const checksContainer = document.getElementById('checks-container');
+      const checksList = document.getElementById('checks-list');
+      const finalResult = document.getElementById('final-result');
+
+      const CHECKS = [
+        { name: 'Checking SSL Certificate', passRate: 0.90 },
+        { name: 'Checking Domain Reputation', passRate: 0.75 },
+        { name: 'Scanning for Malware', passRate: 0.85 },
+        { name: 'Checking for Phishing', passRate: 0.80 },
+        { name: 'Checking Firewall Rules', passRate: 0.70 }
+      ];
+
+      const STEP_DELAY = 400; // ms between each check
+
+      function sleep(ms) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+      }
+
+      function getRandomPass(passRate) {
+        return Math.random() < passRate;
+      }
+
+      function addCheckItem(checkName, passed, pending = false) {
+        const checkItem = document.createElement('div');
+        checkItem.className = `check-item ${!pending ? 'show' : ''}`;
+        
+        const statusClass = pending ? 'pending' : (passed ? 'pass' : 'fail');
+        const statusText = pending ? 'Scanning...' : (passed ? 'Pass' : 'Fail');
+        const icon = pending ? '⏳' : (passed ? '✓' : '✗');
+
+        checkItem.innerHTML = `
+          <div class="check-name">${checkName}</div>
+          <div class="check-status ${statusClass}">${icon} ${statusText}</div>
+        `;
+
+        checksList.appendChild(checkItem);
+        return checkItem;
+      }
+
+      async function performRealtimeScan(url) {
+        // Reset UI
+        checksList.innerHTML = '';
+        finalResult.classList.remove('show');
+        progressContainer.classList.add('active');
+        checksContainer.classList.add('active');
+        scanButton.disabled = true;
+        urlInput.disabled = true;
+
+        const results = [];
+        const totalSteps = CHECKS.length;
+
+        // Perform each check step
+        for (let i = 0; i < CHECKS.length; i++) {
+          const check = CHECKS[i];
+          const passed = getRandomPass(check.passRate);
+          results.push({ name: check.name, passed });
+
+          // Update status message
+          statusText.textContent = check.name + '...';
+          statusMessage.className = 'status-message checking';
+
+          // Add check item with pending state
+          const checkItem = addCheckItem(check.name, passed, true);
+
+          await sleep(STEP_DELAY);
+
+          // Update check item to show result
+          checkItem.classList.add('show');
+          const statusDiv = checkItem.querySelector('.check-status');
+          const statusClass = passed ? 'pass' : 'fail';
+          const statusResult = passed ? '✓ Pass' : '✗ Fail';
+          statusDiv.className = `check-status ${statusClass}`;
+          statusDiv.textContent = statusResult;
+
+          // Update progress bar
+          const progress = ((i + 1) / totalSteps) * 100;
+          progressBar.style.width = progress + '%';
+
+          await sleep(200);
+        }
+
+        // Calculate final result
+        const passedCount = results.filter(r => r.passed).length;
+        let finalStatus, threatScore, badgeClass;
+
+        if (passedCount >= 4) {
+          finalStatus = 'Safe';
+          threatScore = Math.floor(Math.random() * 30);
+          badgeClass = 'safe';
+        } else if (passedCount >= 2) {
+          finalStatus = 'Suspicious';
+          threatScore = Math.floor(Math.random() * 40) + 31;
+          badgeClass = 'suspicious';
+        } else {
+          finalStatus = 'Malicious';
+          threatScore = Math.floor(Math.random() * 30) + 71;
+          badgeClass = 'malicious';
+        }
+
+        // Show final result with animation
+        await sleep(300);
+        statusMessage.className = 'status-message success';
+        statusText.textContent = 'Scan complete!';
+        progressBar.style.width = '100%';
+
+        // Display final result
+        finalResult.classList.add('show');
+        document.getElementById('scan-url').textContent = url;
+        document.getElementById('threat-score').textContent = threatScore;
+        document.getElementById('final-status').textContent = finalStatus;
+        document.getElementById('checks-passed').textContent = `${passedCount}/${CHECKS.length}`;
+
+        const badge = document.getElementById('result-badge');
+        badge.className = `result-status-badge ${badgeClass}`;
+        badge.textContent = finalStatus;
+
+        // Re-enable button
+        await sleep(500);
+        scanButton.disabled = false;
+        urlInput.disabled = false;
+      }
+
+      if (scanForm) {
+        scanForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const url = urlInput.value.trim();
+
+          if (!url) {
+            statusMessage.textContent = 'Please enter a valid URL.';
+            return;
+          }
+
+          // Normalize URL for display
+          let displayUrl = url;
+          if (!url.startsWith('http://') && !url.startsWith('https://')) {
+            displayUrl = 'https://' + url;
+          }
+
+          await performRealtimeScan(displayUrl);
+        });
+      }
+
+      // Original event listeners
+      const reportButton = document.getElementById('report-button');
+      const reportLink = document.getElementById('report-link');
+
+      if (reportButton) {
+        reportButton.addEventListener('click', () => {
+          window.location.href = '/report';
+        });
+      }
+
+      if (reportLink) {
+        reportLink.addEventListener('click', (event) => {
+          event.preventDefault();
+          window.location.href = '/report';
+        });
+      }
+
+      const scannerLink = document.querySelector('a[href="#scanner-section"]');
+      if (scannerLink) {
+        scannerLink.addEventListener('click', (event) => {
+          event.preventDefault();
+          document.getElementById('scanner-section').scrollIntoView({ behavior: 'smooth' });
+        });
+      }
+
+      const logForm = document.getElementById('log-form');
+      if (logForm) {
+        logForm.addEventListener('submit', async (event) => {
+          event.preventDefault();
+          const eventType = document.getElementById('event-type').value;
+          const severity = document.getElementById('severity').value;
+          const status = document.getElementById('log-status').value;
+          const feedback = document.getElementById('log-feedback');
+
+          const response = await fetch('/add-log', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ event_type: eventType, severity: severity, status: status })
+          });
+
+          const data = await response.json();
+          if (data.ok) {
+            feedback.className = 'mt-2 small text-success';
+            feedback.textContent = 'Log added successfully! Refreshing...';
+            setTimeout(() => location.reload(), 1500);
+          } else {
+            feedback.className = 'mt-2 small text-danger';
+            feedback.textContent = 'Error: ' + (data.error || 'Failed to add log');
+          }
+        });
+      }
+    </script>
+  </body>
+</html>

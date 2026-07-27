@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>CyberShield | Your Digital Shield</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.2/font/bootstrap-icons.css" rel="stylesheet" />
+    <style>
+      :root {
+        --bg: #0a0e17;
+        --panel: rgba(17, 24, 39, 0.8);
+        --cyan: #00d4ff;
+        --green: #00c853;
+        --text: #ffffff;
+        --muted: #cbd5e1;
+      }
+
+      body {
+        margin: 0;
+        font-family: Inter, Segoe UI, Roboto, sans-serif;
+        color: var(--text);
+        background: radial-gradient(circle at top left, rgba(0, 212, 255, 0.16), transparent 25%), var(--bg);
+        min-height: 100vh;
+        overflow-x: hidden;
+      }
+
+      .site-bg::before,
+      .site-bg::after {
+        content: "";
+        position: absolute;
+        inset: 0;
+        pointer-events: none;
+        background-image: radial-gradient(circle, rgba(0, 212, 255, 0.16) 1px, transparent 1px);
+        background-size: 24px 24px;
+        opacity: 0.15;
+        animation: drift 20s linear infinite;
+      }
+
+      .site-bg::after {
+        animation-direction: reverse;
+        background-size: 34px 34px;
+      }
+
+      @keyframes drift {
+        from { transform: translateY(0); }
+        to { transform: translateY(40px); }
+      }
+
+      .glass {
+        background: var(--panel);
+        backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 45px rgba(0, 0, 0, 0.28);
+      }
+
+      .nav-link {
+        color: var(--muted);
+        transition: color 0.2s ease;
+      }
+
+      .nav-link:hover {
+        color: white;
+      }
+
+      .hero-shield {
+        font-size: 7rem;
+        color: var(--cyan);
+        animation: pulse 2.4s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { transform: scale(1); filter: drop-shadow(0 0 0 rgba(0, 212, 255, 0.35)); }
+        50% { transform: scale(1.04); filter: drop-shadow(0 0 18px rgba(0, 212, 255, 0.55)); }
+      }
+
+      .btn-cyber {
+        background: linear-gradient(90deg, var(--cyan), #0d7c91);
+        color: white;
+        border: none;
+        border-radius: 999px;
+        padding: 0.8rem 1.2rem;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+      }
+
+      .btn-cyber:hover {
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 12px 24px rgba(0, 212, 255, 0.25);
+      }
+
+      .badge-pill {
+        border: 1px solid rgba(0, 212, 255, 0.25);
+        color: var(--cyan);
+        background: rgba(0, 212, 255, 0.08);
+        padding: 0.55rem 0.9rem;
+        border-radius: 999px;
+      }
+
+      .stat-card:hover,
+      .feature-card:hover {
+        transform: translateY(-4px);
+        border-color: rgba(0, 212, 255, 0.35);
+      }
+
+      .stat-card,
+      .feature-card {
+        transition: transform 0.2s ease, border-color 0.2s ease;
+      }
+
+      footer {
+        color: var(--muted);
+      }
+
+      .text-muted {
+        color: var(--muted) !important;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="site-bg position-relative">
+      <header class="container py-4">
+        <nav class="glass rounded-pill px-4 py-3 d-flex justify-content-between align-items-center">
+          <a href="/" class="text-decoration-none text-white d-flex align-items-center gap-2 fw-bold fs-5">
+            <i class="bi bi-shield-shaded" style="color: var(--cyan);"></i>
+            CyberShield
+          </a>
+          <a href="/login" class="btn btn-outline-light btn-sm rounded-pill px-3">Login</a>
+        </nav>
+      </header>
+
+      <main class="container py-5">
+        <section class="row align-items-center g-5 py-5">
+          <div class="col-lg-7">
+            <div class="d-flex gap-3 flex-wrap mb-4">
+              <span class="badge-pill">Real-time Monitoring</span>
+              <span class="badge-pill">Threat Detection</span>
+              <span class="badge-pill">Detailed Reports</span>
+            </div>
+            <h1 class="display-4 fw-bold mb-3">Your Digital Shield Against Cyber Threats</h1>
+            <p class="lead text-muted mb-4">
+              CyberShield helps teams detect suspicious activity, scan URLs, and monitor security posture in real time with a crisp, intelligent command center.
+            </p>
+            <div class="d-flex gap-3 flex-wrap">
+              <a href="/login" class="btn btn-cyber">Get Started</a>
+              <a href="#features" class="btn btn-outline-light rounded-pill px-4">Explore Features</a>
+            </div>
+          </div>
+          <div class="col-lg-5 text-center">
+            <div class="glass rounded-4 p-5 position-relative">
+              <i class="bi bi-shield-fill-check hero-shield"></i>
+            </div>
+          </div>
+        </section>
+
+        <section class="row g-4 mb-5">
+          <div class="col-md-6 col-xl-3">
+            <div class="stat-card glass rounded-4 p-4 h-100">
+              <h3 class="fw-bold mb-1">10,000+</h3>
+              <p class="text-muted mb-0">URLs Scanned</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="stat-card glass rounded-4 p-4 h-100">
+              <h3 class="fw-bold mb-1">99.9%</h3>
+              <p class="text-muted mb-0">Detection Rate</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="stat-card glass rounded-4 p-4 h-100">
+              <h3 class="fw-bold mb-1">5,247</h3>
+              <p class="text-muted mb-0">Threats Blocked</p>
+            </div>
+          </div>
+          <div class="col-md-6 col-xl-3">
+            <div class="stat-card glass rounded-4 p-4 h-100">
+              <h3 class="fw-bold mb-1">99.99%</h3>
+              <p class="text-muted mb-0">Uptime</p>
+            </div>
+          </div>
+        </section>
+
+        <section id="features" class="row g-4 pb-5">
+          <div class="col-md-4">
+            <div class="feature-card glass rounded-4 p-4 h-100">
+              <div class="text-cyan fs-2 mb-3"><i class="bi bi-search"></i></div>
+              <h4 class="fw-semibold mb-2">URL Scanning</h4>
+              <p class="text-muted mb-0">Scan suspicious URLs for malware, phishing, and other threats with a streamlined review experience.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card glass rounded-4 p-4 h-100">
+              <div class="text-cyan fs-2 mb-3"><i class="bi bi-activity"></i></div>
+              <h4 class="fw-semibold mb-2">Real-time Monitoring</h4>
+              <p class="text-muted mb-0">Monitor your environment for active threats, anomalies, and security events as they happen.</p>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="feature-card glass rounded-4 p-4 h-100">
+              <div class="text-cyan fs-2 mb-3"><i class="bi bi-file-earmark-text"></i></div>
+              <h4 class="fw-semibold mb-2">Detailed Reports</h4>
+              <p class="text-muted mb-0">Generate comprehensive security reports to support analysis, auditing, and response planning.</p>
+            </div>
+          </div>
+        </section>
+      </main>
+
+      <footer class="container py-4 border-top border-secondary-subtle">
+        <div class="d-flex justify-content-between flex-wrap gap-3 align-items-center">
+          <span class="fw-semibold">CyberShield</span>
+          <span>© 2026 CyberShield. All rights reserved.</span>
+        </div>
+      </footer>
+    </div>
+  </body>
+</html>
