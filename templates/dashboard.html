@@ -44,6 +44,77 @@
         margin-bottom: 0.4rem;
       }
 
+      .mobile-header {
+        display: none;
+        align-items: center;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        background: rgba(7, 12, 24, 0.95);
+        border-bottom: 1px solid rgba(0, 212, 255, 0.2);
+      }
+
+      .mobile-header .btn-menu {
+        background: transparent;
+        border: none;
+        color: var(--text);
+        font-size: 1.35rem;
+      }
+
+      .sidebar-backdrop {
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.45);
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.3s ease, visibility 0.3s ease;
+        z-index: 1040;
+      }
+
+      .sidebar-backdrop.visible {
+        opacity: 1;
+        visibility: visible;
+      }
+
+      .sidebar.closed {
+        transform: translateX(-110%);
+      }
+
+      .sidebar.open {
+        transform: translateX(0);
+      }
+
+      @media (max-width: 991.98px) {
+        .sidebar {
+          position: fixed;
+          top: 0;
+          left: 0;
+          width: 260px;
+          height: 100vh;
+          padding-top: 1rem;
+          border-right: none;
+          z-index: 1050;
+          transform: translateX(-110%);
+          transition: transform 0.3s ease;
+        }
+
+        .sidebar.px-3 {
+          padding-left: 1rem;
+          padding-right: 1rem;
+        }
+
+        .container-fluid > .row {
+          margin-top: 0;
+        }
+
+        main {
+          margin-left: 0 !important;
+        }
+
+        .mobile-header {
+          display: flex;
+        }
+      }
+
       .sidebar .nav-link.active,
       .sidebar .nav-link:hover {
         color: white;
@@ -388,8 +459,17 @@
   </head>
   <body>
     <div class="container-fluid">
+      <div class="mobile-header d-md-none">
+        <div class="d-flex align-items-center gap-2">
+          <i class="bi bi-shield-shaded fs-4" style="color: var(--cyan);"></i>
+          <span class="fw-bold">CyberShield</span>
+        </div>
+        <button id="sidebarToggle" class="btn-menu" type="button" aria-label="Open navigation">
+          <i class="bi bi-list"></i>
+        </button>
+      </div>
       <div class="row">
-        <nav class="col-md-3 col-lg-2 d-md-block sidebar py-4">
+        <nav id="dashboardSidebar" class="col-md-3 col-lg-2 d-md-block sidebar closed py-4">
           <div class="px-3 mb-4">
             <h3 class="fw-bold d-flex align-items-center gap-2">
               <i class="bi bi-shield-shaded text-cyan"></i>
@@ -425,6 +505,7 @@
             </li>
           </ul>
         </nav>
+        <div id="sidebarBackdrop" class="sidebar-backdrop"></div>
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 py-4">
           <div class="d-flex justify-content-between align-items-center mb-4">
@@ -798,8 +879,40 @@
         scannerLink.addEventListener('click', (event) => {
           event.preventDefault();
           document.getElementById('scanner-section').scrollIntoView({ behavior: 'smooth' });
+          if (window.innerWidth < 992) {
+            dashboardSidebar.classList.remove('open');
+            sidebarBackdrop.classList.remove('visible');
+          }
         });
       }
+
+      const dashboardSidebar = document.getElementById('dashboardSidebar');
+      const sidebarToggle = document.getElementById('sidebarToggle');
+      const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+      const sidebarLinks = document.querySelectorAll('.sidebar .nav-link');
+
+      if (sidebarToggle && dashboardSidebar) {
+        sidebarToggle.addEventListener('click', () => {
+          dashboardSidebar.classList.toggle('open');
+          sidebarBackdrop.classList.toggle('visible');
+        });
+      }
+
+      if (sidebarBackdrop && dashboardSidebar) {
+        sidebarBackdrop.addEventListener('click', () => {
+          dashboardSidebar.classList.remove('open');
+          sidebarBackdrop.classList.remove('visible');
+        });
+      }
+
+      sidebarLinks.forEach((link) => {
+        link.addEventListener('click', () => {
+          if (window.innerWidth < 992) {
+            dashboardSidebar.classList.remove('open');
+            sidebarBackdrop.classList.remove('visible');
+          }
+        });
+      });
 
       const logForm = document.getElementById('log-form');
       if (logForm) {
