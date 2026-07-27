@@ -83,14 +83,6 @@
         visibility: visible;
       }
 
-      .sidebar.closed {
-        transform: translateX(-110%);
-      }
-
-      .sidebar.open {
-        transform: translateX(0);
-      }
-
       @media (max-width: 991.98px) {
         .sidebar {
           position: fixed;
@@ -103,6 +95,14 @@
           z-index: 1050;
           transform: translateX(-110%);
           transition: transform 0.3s ease;
+        }
+
+        .sidebar.closed {
+          transform: translateX(-110%);
+        }
+
+        .sidebar.open {
+          transform: translateX(0);
         }
 
         .sidebar.px-3 {
@@ -556,7 +556,7 @@
         </button>
       </div>
       <div class="row">
-        <nav id="dashboardSidebar" class="col-md-3 col-lg-2 d-md-block sidebar closed py-4">
+        <nav id="dashboardSidebar" class="col-md-3 col-lg-2 d-md-block sidebar py-4">
           <div class="px-3 mb-4">
             <h3 class="fw-bold d-flex align-items-center gap-2">
               <i class="bi bi-shield-shaded text-cyan"></i>
